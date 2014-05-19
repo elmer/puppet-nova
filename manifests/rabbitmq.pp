@@ -4,17 +4,17 @@
 #
 # ==Parameters
 #
-# [cluster_disk_nodes] Enables/disables RabbitMQ clustering.  Specify an array of Rabbit Broker
+# [cluster_nodes] Enables/disables RabbitMQ clustering.  Specify an array of Rabbit Broker
 #   IP addresses to configure clustering. Optional.
 #   Defaults to false.
 #
 class nova::rabbitmq(
-  $userid             ='guest',
-  $password           ='guest',
-  $port               ='5672',
-  $virtual_host       ='/',
-  $cluster_disk_nodes = false,
-  $enabled            = true
+  $userid        ='guest',
+  $password      ='guest',
+  $port          ='5672',
+  $virtual_host  ='/',
+  $cluster_nodes = false,
+  $enabled       = true
 ) {
 
   # only configure nova after the queue is up
@@ -44,13 +44,13 @@ class nova::rabbitmq(
     $service_ensure = 'stopped'
   }
 
-  if $cluster_disk_nodes {
+  if $cluster_nodes {
     class { 'rabbitmq::server':
       service_ensure           => $service_ensure,
       port                     => $port,
       delete_guest_user        => $delete_guest_user,
       config_cluster           => true,
-      cluster_disk_nodes       => $cluster_disk_nodes,
+      cluster_nodes            => $cluster_nodes,
       wipe_db_on_cookie_change => true,
     }
   } else {
